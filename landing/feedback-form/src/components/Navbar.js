@@ -18,7 +18,7 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Home</Link>
             <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium transition">About</Link>
-            <Link to="/careers" className="text-gray-700 hover:text-blue-600 font-medium transition">Careers</Link>
+            {/* <Link to="/careers" className="text-gray-700 hover:text-blue-600 font-medium transition">Careers</Link> */}
           </div>
           {/* Mobile Hamburger */}
           <div className="md:hidden flex items-center">
@@ -64,13 +64,13 @@ const Navbar = () => {
             >
               About
             </Link>
-            <Link
+            {/* <Link
               to="/careers"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition"
               onClick={() => setMenuOpen(false)}
             >
               Careers
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}

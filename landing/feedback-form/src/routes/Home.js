@@ -91,7 +91,7 @@ const Home =()=>{
               </svg>
             </div>
             <code className="text-sm text-blue-400">
-              &lt;script src="https://feedback.yourdomain.com/widget.js"&gt;&lt;/script&gt;
+              &lt;script src="https://feedbackform.rivieraapps.com/plugin.js"&gt;&lt;/script&gt;
             </code>
           </div>
         </div>
@@ -115,6 +115,7 @@ const Home =()=>{
             <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
               © 2025 Feedback Plugin. All rights reserved.
             </p>
+            <script src="/plugin.js"></script>
           </div>
         </div>
       </footer>
