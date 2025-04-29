@@ -115,7 +115,7 @@ const Home =()=>{
             <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
               © 2025 Feedback Plugin. All rights reserved.
             </p>
-            <script src="/plugin.js"></script>
+            <script src="{`${process.env.PUBLIC_URL}/plugin.js}"></script>
           </div>
         </div>
       </footer>
