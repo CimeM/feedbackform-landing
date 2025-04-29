@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -18,6 +17,8 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Home</Link>
             <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium transition">About</Link>
+            <Link to="/blog" className="text-gray-700 hover:text-blue-600 font-medium transition">Blog</Link>
+            <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</Link>
             {/* <Link to="/careers" className="text-gray-700 hover:text-blue-600 font-medium transition">Careers</Link> */}
           </div>
           {/* Mobile Hamburger */}
@@ -64,16 +65,24 @@ const Navbar = () => {
             >
               About
             </Link>
-            {/* <Link
-              to="/careers"
+            <Link
+              to="/blog"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition"
               onClick={() => setMenuOpen(false)}
             >
-              Careers
-            </Link> */}
+              Blog
+            </Link>
+            <Link
+              to="/dashboard"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
           </div>
         </div>
       )}
+      
     </nav>
   );
 };

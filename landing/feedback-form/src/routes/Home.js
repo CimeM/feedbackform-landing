@@ -86,12 +86,12 @@ const Home =()=>{
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-gray-400 overflow-y-hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
               </svg>
             </div>
             <code className="text-sm text-blue-400">
-              &lt;script src="https://feedbackform.rivieraapps.com/plugin.js"&gt;&lt;/script&gt;
+              &lt;script src="https://feedbackform.rivieraaapps.com/plugin.js"&gt;&lt;/script&gt;
             </code>
           </div>
         </div>
@@ -113,11 +113,12 @@ const Home =()=>{
               </a>
             </div>
             <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
-              © 2025 Feedback Plugin. All rights reserved.
+              © 2025 Feedback Form Plugin. All rights reserved.
             </p>
             <script src="{`${process.env.PUBLIC_URL}/plugin.js}"></script>
           </div>
         </div>
+        <script src="/plugin.js"></script>
       </footer>
     </div>
     )
