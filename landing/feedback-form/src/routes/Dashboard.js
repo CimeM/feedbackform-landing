@@ -1,68 +1,74 @@
 import React, { useState, useEffect } from "react";
 
 // Demo feedbacks data (for fallback)
-const feedbacksData = [
-  {
-    id: 14421,
-    content: "It would be great to have a dark mode for the plugin.",
-    date: "2025-04-29",
-    type: "Feature Request",
-    tags: ["UI", "Accessibility"],
-    comments: [
-      { id: 1, text: "Great idea!" }
-    ]
-  },
-  {
-    id: 14422,
-    content: "The feedback form doesn't submit on mobile devices.",
-    date: "2025-04-28",
-    type: "Bug",
-    tags: ["Mobile", "Form"],
-    comments: []
-  },
-  {
-    id: 14424,
-    content: "Please add the dark theme to the plugin!.",
-    date: "2025-04-18",
-    type: "Feedback",
-    tags: ["Mobile", "Form"],
-    comments: []
-  },
-  {
-    id: 14425,
-    content: "The feedback form doesn't submit on mobile devices.",
-    date: "2025-04-28",
-    type: "Bug",
-    tags: ["Mobile", "Form"],
-    comments: []
-  },
-  {
-    id: 14428,
-    content: "Please add the dark theme to the plugin!.",
-    date: "2025-04-18",
-    type: "Feedback",
-    tags: ["Mobile", "Form"],
-    comments: []
-  }
-];
+const feedbacksData = {
+  origin: "localhost",
+  count: 1,
+  entries: [
+    {
+      _id: 14421,
+      message: "It would be great to have a dark mode for the plugin.",
+      createdAt	: "2025-04-29",
+      type: "Feature Request",
+      tags: ["UI", "Accessibility"],
+      comments: [
+        { id: 1, text: "Great idea!" }
+      ]
+    },
+    {
+      _id: 14422,
+      message: "The feedback form doesn't submit on mobile devices.",
+      createdAt	: "2025-04-28",
+      type: "Bug",
+      tags: ["Mobile", "Form"],
+      comments: []
+    },
+    {
+      _id: 14424,
+      message: "Please add the dark theme to the plugin!.",
+      createdAt	: "2025-04-18",
+      type: "Feedback",
+      tags: ["Mobile", "Form"],
+      comments: []
+    },
+    {
+      _id: 14425,
+      message: "The feedback form doesn't submit on mobile devices.",
+      createdAt	: "2025-04-28",
+      type: "Bug",
+      tags: ["Mobile", "Form"],
+      comments: []
+    },
+    {
+      _id: 14428,
+      message: "Please add the dark theme to the plugin!.",
+      createdAt	: "2025-04-18",
+      type: "Feedback",
+      tags: ["Mobile", "Form"],
+      comments: []
+    }
+  ]
+};
 
 const typeOptions = ["All", "Feature Request", "Bug", "Other"];
 
 // Fetch feedbacks from API
-async function fetchFeedbacks() {
+async function fetchFeedbacks( selectedHostname ) {
   try {
-    const response = await fetch('https://feedbackform.rivieraapps.com/api/feedbacks');
+    const response = await fetch('http://api.feedbackform.rivieraapps.com/api/feedback?origin='+selectedHostname );
     if (!response.ok) throw new Error("Failed to fetch");
     const data = await response.json();
     // Ensure comments and tags always exist
-    return data.map(fb => ({
+    return data.entries.map(fb => ({
       ...fb,
       comments: Array.isArray(fb.comments) ? fb.comments : [],
       tags: Array.isArray(fb.tags) ? fb.tags : [],
     }));
   } catch (e) {
+    console.log("Error", e)
+    console.log("Cannot fetch from API. Fallback to demo values.")
     // Fallback to demo data
-    return feedbacksData.map(fb => ({
+    return feedbacksData.entries.map(fb => ({
       ...fb,
       comments: Array.isArray(fb.comments) ? fb.comments : [],
       tags: Array.isArray(fb.tags) ? fb.tags : [],
@@ -73,7 +79,7 @@ async function fetchFeedbacks() {
 // Update feedback via API
 async function updateFeedback(feedback) {
   try {
-    const response = await fetch(`https://feedbackform.rivieraapps.com/api/feedbacks/${feedback.id}`, {
+    const response = await fetch(`https://api.feedbackform.rivieraapps.com/api/feedback/${feedback._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(feedback)
@@ -88,6 +94,7 @@ async function updateFeedback(feedback) {
 
 const Dashboard = () => {
   const [selectedType, setSelectedType] = useState("All");
+  const [selectedHostname, setSelectedHostname] = useState("localhost");
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
   const [comment, setComment] = useState("");
@@ -95,9 +102,9 @@ const Dashboard = () => {
 
   // Load feedbacks from API on mount
   useEffect(() => {
-    fetchFeedbacks().then(fbs => {
+    fetchFeedbacks(selectedHostname).then(fbs => {
       // Sort by date descending
-      setFeedbacks(fbs.sort((a, b) => new Date(b.date) - new Date(a.date)));
+      setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt	) - new Date(a.createdAt	)));
     });
   }, []);
 
@@ -119,7 +126,7 @@ const Dashboard = () => {
     };
     await updateFeedback(updated);
     setFeedbacks((prev) =>
-      prev.map((fb) => (fb.id === updated.id ? updated : fb))
+      prev.map((fb) => (fb._id === updated._id ? updated : fb))
     );
     setSelectedFeedback(updated);
     setComment("");
@@ -137,10 +144,19 @@ const Dashboard = () => {
     };
     await updateFeedback(updated);
     setFeedbacks((prev) =>
-      prev.map((fb) => (fb.id === updated.id ? updated : fb))
+      prev.map((fb) => (fb._id === updated._id ? updated : fb))
     );
     setSelectedFeedback(updated);
     setTag("");
+  };
+
+  // Change hostname
+  const handleHostChange = async () => {
+    // Trigger the fetch
+    fetchFeedbacks(selectedHostname).then(fbs => {
+      // Sort by date descending
+      setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt	) - new Date(a.createdAt	)));
+    });
   };
 
   // When selecting a feedback, ensure comments/tags exist
@@ -156,7 +172,9 @@ const Dashboard = () => {
     <div className="max-w-4xl mx-auto my-10 px-4">
       <h1 className="text-3xl font-bold mb-6 text-blue-700">Feedback Dashboard</h1>
       <div className="flex items-center mb-6 gap-4">
+        
         <label className="font-semibold">Sort by type:</label>
+        
         <select
           className="border rounded px-2 py-1"
           value={selectedType}
@@ -166,24 +184,40 @@ const Dashboard = () => {
             <option key={type}>{type}</option>
           ))}
         </select>
+
+        <label className="font-semibold">Host</label>
+        <input
+          className="border rounded px-2 py-1 text-sm"
+          type="text"
+          placeholder="Add tag"
+          value={selectedHostname}
+          onChange={(e) => setSelectedHostname(e.target.value)}
+        />
+        <button
+          className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+          onClick={handleHostChange}
+        >
+          Set
+        </button>
+
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Feedback List */}
-        <div>
+        <div key="feedbacklist" >
           <ul>
             {filteredFeedbacks.map((fb) => (
               <li
-                key={fb.id}
+                key={fb._id}
                 className={`mb-4 p-4 rounded shadow cursor-pointer border hover:border-blue-400 transition ${
-                  selectedFeedback && selectedFeedback.id === fb.id
+                  selectedFeedback && selectedFeedback._id === fb._id
                     ? "bg-blue-50 border-blue-400"
                     : "bg-white border-gray-200"
                 }`}
                 onClick={() => handleSelectFeedback(fb)}
               >
                 <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-blue-700">{fb.type}</h2> #{fb.id}
-                  <span className="text-xs text-gray-500">{fb.date}</span>
+                  <h2 className="text-lg font-semibold text-blue-700">{fb.type || "Feedback " }</h2> #{fb._id.slice(-5)}
+                  <span className="text-xs text-gray-500">{fb.createdAt	}</span>
                 </div>
                 <div className="flex gap-2 mt-2">
                   {fb.tags && fb.tags.map((t, idx) => (
@@ -200,12 +234,12 @@ const Dashboard = () => {
           </ul>
         </div>
         {/* Feedback Details */}
-        <div>
+        <div key="filteredFeedbacks" >
           {selectedFeedback ? (
             <div className="p-4 bg-white rounded shadow border border-gray-200">
               <h2 className="text-2xl font-bold mb-2 text-blue-700">{selectedFeedback.type}</h2>
-              <div className="mb-2 text-sm text-gray-500">{selectedFeedback.date}</div>
-              <div className="mb-4 text-gray-800">{selectedFeedback.content}</div>
+              <div className="mb-2 text-sm text-gray-500">{selectedFeedback.createdAt	}</div>
+              <div className="mb-4 text-gray-800">"{selectedFeedback.message}"</div>
               <div className="mb-4">
                 <h3 className="font-semibold mb-1">Tags:</h3>
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -240,7 +274,7 @@ const Dashboard = () => {
                 <ul className="mb-2">
                   {selectedFeedback.comments &&
                     selectedFeedback.comments.map((c) => (
-                      <li key={c.id} className="mb-1 text-gray-700">
+                      <li key={c._id} className="mb-1 text-gray-700">
                         • {c.text}
                       </li>
                     ))}

@@ -172,9 +172,10 @@ function feedbackPlugin() {
     feedbackText.focus();
   }
 
-  bugButton.addEventListener("click", () => showTextarea("Bug"));
-  feedbackTypeButton.addEventListener("click", () => showTextarea("Feedback"));
-  otherButton.addEventListener("click", () => showTextarea("Other"));
+  var feedbackType="";
+  bugButton.addEventListener("click", () => {showTextarea("Bug"); feedbackType="Bug"});
+  feedbackTypeButton.addEventListener("click", () => {showTextarea("Feedback"); feedbackType="Feedback"});
+  otherButton.addEventListener("click", () => {showTextarea("Other"); feedbackType="Other"});
 
   // Send feedback handler
   sendButton.addEventListener("click", async () => {
@@ -202,12 +203,13 @@ function feedbackPlugin() {
 
   // Send feedback function (same as your original)
   async function sendFeedback(text) {
-    const endpoint = "http://localhost:3001/api/feedback";
+    // const endpoint = "http://localhost:3001/api/feedback";
+    const endpoint = "http://api.feedbackform.rivieraapps.com/api/feedback";
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, type: feedbackType }),
       });
       if (response.ok) {
         return true;
