@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 
+import FeedbackTicket from '../components/FeedbackTicket';
+
 // Demo feedbacks data (for fallback)
 const feedbacksData = {
   origin: "localhost",
   count: 1,
   entries: [
     {
-      _id: 14421,
+      _id: "681736b4422da3f1a698043b",
       message: "It would be great to have a dark mode for the plugin.",
+      title: "Mobile friendly",
       createdAt	: "2025-04-29",
       type: "Feature Request",
       tags: ["UI", "Accessibility"],
@@ -16,7 +19,8 @@ const feedbacksData = {
       ]
     },
     {
-      _id: 14422,
+      _id: "681736b4422da3f1a698043a",
+      title: "Mobile friendly",
       message: "The feedback form doesn't submit on mobile devices.",
       createdAt	: "2025-04-28",
       type: "Bug",
@@ -24,7 +28,8 @@ const feedbacksData = {
       comments: []
     },
     {
-      _id: 14424,
+      _id: "681736b4422da3f1a6980433",
+      title: "Dark theme",
       message: "Please add the dark theme to the plugin!.",
       createdAt	: "2025-04-18",
       type: "Feedback",
@@ -32,7 +37,8 @@ const feedbacksData = {
       comments: []
     },
     {
-      _id: 14425,
+      _id: "681736b4422da3f1a698043e",
+      title: "Mobile support",
       message: "The feedback form doesn't submit on mobile devices.",
       createdAt	: "2025-04-28",
       type: "Bug",
@@ -40,7 +46,8 @@ const feedbacksData = {
       comments: []
     },
     {
-      _id: 14428,
+      _id: "681736b4422da3f1a698043h",
+      title: "Dark theme",
       message: "Please add the dark theme to the plugin!.",
       createdAt	: "2025-04-18",
       type: "Feedback",
@@ -50,116 +57,187 @@ const feedbacksData = {
   ]
 };
 
-const typeOptions = ["All", "Feature Request", "Bug", "Other"];
+const typeOptions = ["All", "Feedback", "Bug", "Other"];
 
 // Fetch feedbacks from API
-async function fetchFeedbacks( selectedHostname ) {
+async function fetchFeedbacks(url, selectedHostname ) {
   try {
-    const response = await fetch('http://api.feedbackform.rivieraapps.com/api/feedback?origin='+selectedHostname );
-    if (!response.ok) throw new Error("Failed to fetch");
+    const sanitizedHost = encodeURIComponent(selectedHostname);
+    const response = await fetch(`${url}?origin=${sanitizedHost}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
-    // Ensure comments and tags always exist
-    return data.entries.map(fb => ({
-      ...fb,
-      comments: Array.isArray(fb.comments) ? fb.comments : [],
+    console.log("fetchFeedbacks data", data)
+    // Ensure required fields with fallbacks
+    return data.entries.map((fb: any) => ({
+      _id: fb._id || Date.now().toString(),
+      title: fb.title || 'Untitled Feedback',
+      message: fb.message || '',
+      type: fb.type || 'Other',
       tags: Array.isArray(fb.tags) ? fb.tags : [],
+      comments: Array.isArray(fb.comments) ? fb.comments : [],
+      createdAt: fb.createdAt || new Date().toISOString(),
+      origin: fb.origin || 'unknown',
+      updatedAt: fb.updatedAt || new Date().toISOString()
     }));
+    
   } catch (e) {
-    console.log("Error", e)
-    console.log("Cannot fetch from API. Fallback to demo values.")
-    // Fallback to demo data
+    console.error('Fetch error:', e);
+    // Return sanitized demo data
     return feedbacksData.entries.map(fb => ({
       ...fb,
       comments: Array.isArray(fb.comments) ? fb.comments : [],
       tags: Array.isArray(fb.tags) ? fb.tags : [],
+      createdAt: fb.createdAt || new Date().toISOString(),
+      updatedAt: fb.updatedAt || new Date().toISOString()
     }));
   }
 }
 
 // Update feedback via API
-async function updateFeedback(feedback) {
+async function updateFeedback(url, feedback: any) {
   try {
-    const response = await fetch(`https://api.feedbackform.rivieraapps.com/api/feedback/${feedback._id}`, {
+    console.log("feedback", feedback)
+    const response = await fetch(`${url}/${feedback._id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(feedback)
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify({
+        title: feedback.title.substring(0, 100), // Sanitize input
+        message: feedback.message.substring(0, 1000),
+        type: ['Bug', 'Feature Request', 'Other'].includes(feedback.type) 
+          ? feedback.type 
+          : 'Other',
+        tags: feedback.tags.filter((t: string) => t.length <= 20),
+        comments: feedback.comments
+      })
     });
-    if (!response.ok) throw new Error("Failed to update");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Update failed');
+    }
+
     return await response.json();
   } catch (e) {
-    // For demo, just return the feedback
-    return feedback;
+    console.error('Update error:', e);
+    throw e; // Propagate error for UI handling
   }
 }
 
 const Dashboard = () => {
+
   const [selectedType, setSelectedType] = useState("All");
-  const [selectedHostname, setSelectedHostname] = useState("localhost");
+  const [selectedHostname, setSelectedHostname] = useState("feedbackform.rivieraapps.com");
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
   const [comment, setComment] = useState("");
   const [tag, setTag] = useState("");
+  const [search, setSearch] = useState("");
 
-  // Load feedbacks from API on mount
+  const apiurl = "https://api.feedbackform.rivieraapps.com/api/feedback"
   useEffect(() => {
-    fetchFeedbacks(selectedHostname).then(fbs => {
-      // Sort by date descending
-      setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt	) - new Date(a.createdAt	)));
+    fetchFeedbacks(apiurl, selectedHostname).then(fbs => {
+      setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     });
   }, []);
 
-  // Filter feedbacks by type
-  const filteredFeedbacks =
-    selectedType === "All"
-      ? feedbacks
-      : feedbacks.filter((fb) => fb.type === selectedType);
+  // Filtering logic: by type and search
+  const filteredFeedbacks = feedbacks.filter(fb => {
+    const matchesType = selectedType === "All" || fb.type === selectedType;
+    const searchLower = search.toLowerCase();
+    const matchesSearch =
+      fb.title?.toLowerCase().includes(searchLower) ||
+      fb.message?.toLowerCase().includes(searchLower) ||
+      (fb.tags && fb.tags.some(t => t.toLowerCase().includes(searchLower)));
+    return matchesType && (!search || matchesSearch);
+  });
 
-  // Add a comment and update via API
   const handleAddComment = async () => {
     if (!comment.trim() || !selectedFeedback) return;
-    const updated = {
-      ...selectedFeedback,
-      comments: [
-        ...(selectedFeedback.comments || []),
-        { id: Date.now(), text: comment.trim() }
-      ]
-    };
-    await updateFeedback(updated);
-    setFeedbacks((prev) =>
-      prev.map((fb) => (fb._id === updated._id ? updated : fb))
+    
+    // Create NEW comments array (but keep other feedback properties)
+    const newComments = [...(selectedFeedback.comments || []), 
+      { id: Date.now(), text: comment.trim() }
+    ];
+  
+    // Update backend
+    await updateFeedback(apiurl, { ...selectedFeedback, comments: newComments });
+  
+    // Update parent state WITHOUT new object
+    setFeedbacks(prev => 
+      prev.map(fb => 
+        fb._id === selectedFeedback._id 
+          ? { ...fb, comments: newComments } 
+          : fb
+      )
     );
-    setSelectedFeedback(updated);
+  
+    // Preserve object reference unless comments changed
+    setSelectedFeedback(prev => ({
+      ...prev,
+      comments: newComments
+    }));
+    
     setComment("");
   };
 
-  // Add a tag and update via API
   const handleAddTag = async () => {
     if (!tag.trim() || !selectedFeedback) return;
     const updated = {
       ...selectedFeedback,
-      tags: [
-        ...(selectedFeedback.tags || []),
-        tag.trim()
-      ]
+      tags: [...(selectedFeedback.tags || []), tag.trim()]
     };
-    await updateFeedback(updated);
-    setFeedbacks((prev) =>
-      prev.map((fb) => (fb._id === updated._id ? updated : fb))
+    await updateFeedback(apiurl, updated);
+    setFeedbacks(prev =>
+      prev.map(fb => (fb._id === updated._id ? updated : fb))
     );
-    setSelectedFeedback(updated);
+    setSelectedFeedback(prev =>
+      prev && prev._id === updated._id
+        ? { ...prev, tags: updated.tags }
+        : prev
+    );
     setTag("");
   };
 
-  // Change hostname
-  const handleHostChange = async () => {
-    // Trigger the fetch
-    fetchFeedbacks(selectedHostname).then(fbs => {
-      // Sort by date descending
-      setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt	) - new Date(a.createdAt	)));
-    });
+  // Tag removal handler
+  const handleRemoveTag = (tagIdx) => {
+    const newTags = selectedFeedback.tags.filter((_, idx) => idx !== tagIdx);
+    
+    updateFeedback(apiurl, { ...selectedFeedback, tags: newTags });
+    
+    setSelectedFeedback(prev => ({
+      ...prev,
+      tags: newTags
+    }));
+    
+    setFeedbacks(prev => 
+      prev.map(fb => 
+        fb._id === selectedFeedback._id 
+          ? { ...fb, tags: newTags } 
+          : fb
+      )
+    );
   };
 
-  // When selecting a feedback, ensure comments/tags exist
+  const handleHostChange = async () => {
+    const newFeedbacks = await fetchFeedbacks(selectedHostname);
+    
+    setFeedbacks(newFeedbacks.sort((a, b) => 
+      new Date(b.createdAt) - new Date(a.createdAt)
+    ));
+  
+    // Preserve selected feedback if it still exists
+    setSelectedFeedback(prev => 
+      newFeedbacks.find(fb => fb._id === prev?._id) || null
+    );
+  };
+
   const handleSelectFeedback = (fb) => {
     setSelectedFeedback({
       ...fb,
@@ -168,141 +246,133 @@ const Dashboard = () => {
     });
   };
 
+  class ErrorBoundary extends React.Component {
+    state = { hasError: false };
+    static getDerivedStateFromError() { return { hasError: true }; }
+    componentDidCatch(error, info) { /* log error */ }
+    resetError = () => this.setState({ hasError: false });
+    render() {
+      if (this.state.hasError) {
+        return (
+          <div>
+            <div>Error loading dashboard. Please refresh.</div>
+            <button onClick={this.resetError}>Try Again</button>
+          </div>
+        );
+      }
+      return this.props.children;
+    }
+  }
+
+  // Responsive: show sidebar as drawer on mobile
   return (
-    <div className="max-w-4xl mx-auto my-10 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-blue-700">Feedback Dashboard</h1>
-      <div className="flex items-center mb-6 gap-4">
+    <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         
-        <label className="font-semibold">Sort by type:</label>
-        
-        <select
-          className="border rounded px-2 py-1"
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-        >
-          {typeOptions.map((type) => (
-            <option key={type}>{type}</option>
-          ))}
-        </select>
-
-        <label className="font-semibold">Host</label>
-        <input
-          className="border rounded px-2 py-1 text-sm"
-          type="text"
-          placeholder="Add tag"
-          value={selectedHostname}
-          onChange={(e) => setSelectedHostname(e.target.value)}
-        />
-        <button
-          className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-          onClick={handleHostChange}
-        >
-          Set
-        </button>
-
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Feedback List */}
-        <div key="feedbacklist" >
-          <ul>
-            {filteredFeedbacks.map((fb) => (
-              <li
-                key={fb._id}
-                className={`mb-4 p-4 rounded shadow cursor-pointer border hover:border-blue-400 transition ${
-                  selectedFeedback && selectedFeedback._id === fb._id
-                    ? "bg-blue-50 border-blue-400"
-                    : "bg-white border-gray-200"
-                }`}
-                onClick={() => handleSelectFeedback(fb)}
-              >
-                <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-blue-700">{fb.type || "Feedback " }</h2> #{fb._id.slice(-5)}
-                  <span className="text-xs text-gray-500">{fb.createdAt	}</span>
-                </div>
-                <div className="flex gap-2 mt-2">
-                  {fb.tags && fb.tags.map((t, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded text-xs"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </li>
+        <h1 className="text-3xl font-bold mb-6 text-blue-700">Feedback Dashboard</h1>
+        <div className="flex flex-wrap items-center mb-4 gap-2">
+          <label className="font-semibold">Sort by type:</label>
+          <select
+            className="border rounded px-2 py-1"
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
+            {typeOptions.map((type) => (
+              <option key={type}>{type}</option>
             ))}
-          </ul>
+          </select>
+          <label className="font-semibold">Host</label>
+          <input
+            className="border rounded px-2 py-1 text-sm"
+            type="text"
+            placeholder="Hostname"
+            value={selectedHostname}
+            onChange={(e) => setSelectedHostname(e.target.value)}
+          />
+          <button
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+            onClick={handleHostChange}
+          >
+            Set
+          </button>
+          {/* Search field */}
+          <input
+            className="border rounded px-2 py-1 text-sm flex-1 min-w-[120px]"
+            type="text"
+            placeholder="Search by title, tag, or message"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
-        {/* Feedback Details */}
-        <div key="filteredFeedbacks" >
-          {selectedFeedback ? (
-            <div className="p-4 bg-white rounded shadow border border-gray-200">
-              <h2 className="text-2xl font-bold mb-2 text-blue-700">{selectedFeedback.type}</h2>
-              <div className="mb-2 text-sm text-gray-500">{selectedFeedback.createdAt	}</div>
-              <div className="mb-4 text-gray-800">"{selectedFeedback.message}"</div>
-              <div className="mb-4">
-                <h3 className="font-semibold mb-1">Tags:</h3>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {selectedFeedback.tags &&
-                    selectedFeedback.tags.map((t, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded text-xs"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    className="border rounded px-2 py-1 text-sm"
-                    type="text"
-                    placeholder="Add tag"
-                    value={tag}
-                    onChange={(e) => setTag(e.target.value)}
-                  />
-                  <button
-                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                    onClick={handleAddTag}
+    
+        <div className="flex flex-col sm:flex-row gap-6">
+          {/* Feedback List */}
+          {!selectedFeedback || window.innerWidth >= 640 ? (
+            <div key="feedbacklist"
+              className="w-full sm:w-[448px] sm:max-w-md"
+            >
+              <ul>
+                {filteredFeedbacks.map((fb) => (
+                  <li
+                    key={fb._id}
+                    className={`mb-4 p-4 rounded shadow cursor-pointer border hover:border-blue-400 transition ${
+                      selectedFeedback && selectedFeedback._id === fb._id
+                        ? "bg-blue-50 border-blue-400"
+                        : "bg-white border-gray-200"
+                    }`}
+                    onClick={() => handleSelectFeedback(fb)}
                   >
-                    Add
-                  </button>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Comments:</h3>
-                <ul className="mb-2">
-                  {selectedFeedback.comments &&
-                    selectedFeedback.comments.map((c) => (
-                      <li key={c._id} className="mb-1 text-gray-700">
-                        • {c.text}
-                      </li>
-                    ))}
-                </ul>
-                <div className="flex gap-2">
-                  <input
-                    className="border rounded px-2 py-1 text-sm"
-                    type="text"
-                    placeholder="Add comment"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                  />
-                  <button
-                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                    onClick={handleAddComment}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-lg font-semibold text-blue-700">{fb.title || "Feedback"}</h2> #{fb._id.slice(-5)}
+                      <span className="text-xs text-gray-500">{fb.createdAt}</span>
+                    </div>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      {fb.tags && fb.tags.map((t, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded text-xs"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ) : (
-            <div className="p-6 text-gray-400 text-center">Select a feedback to view details.</div>
+          ) : null}
+    
+          {/* Feedback Details */}
+          {selectedFeedback && (
+            <div key={`feedback-${selectedFeedback._id}`} className="flex-1 min-w-0" >
+              <ErrorBoundary>
+              </ErrorBoundary>
+
+                <FeedbackTicket 
+                  feedback={selectedFeedback}
+                  tag={tag}
+                  setTag={setTag}
+                  handleAddTag={handleAddTag}
+                  handleRemoveTag={handleRemoveTag}
+                  comment={comment}
+                  setComment={setComment}
+                  handleAddComment={handleAddComment}
+                  onBack={window.innerWidth < 640 ? () => setSelectedFeedback(null) : undefined}
+                />
+            </div>
+          )}
+          
+    
+          {/* Show placeholder if no feedback is selected and on desktop */}
+          {!selectedFeedback && window.innerWidth >= 640 && (
+            <div className="p-6 text-gray-400 text-center">
+              Select a feedback to view details.
+            </div>
           )}
         </div>
       </div>
-    </div>
+    
   );
+  
 };
 
 export default Dashboard;

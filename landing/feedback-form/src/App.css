@@ -40,3 +40,12 @@
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 640px) {
+  .sm\:static {
+    position: static;
+  }
+  .sm\:block {
+    display: block;
+  }
+}

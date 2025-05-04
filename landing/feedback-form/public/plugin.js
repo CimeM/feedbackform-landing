@@ -72,10 +72,27 @@ function feedbackPlugin() {
         font-weight: bold;
         display: none;
       }
-      textarea {
+      #feedback-text {
         width: 100%;
         margin-top: 10px;
         resize: vertical;
+        line-height: 1.25rem;
+        font-size: inherit;
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        padding-left: .5rem;
+        padding-right: .5rem;
+      }
+      #feedback-title {
+        width:100%;
+        margin-bottom:10px;
+        border: 2px solid rgba(167,139,250,.2);
+        line-height: 1.25rem;
+        font-size: inherit;
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        padding-left: .5rem;
+        padding-right: .5rem;
       }
     </style>
 
@@ -94,8 +111,10 @@ function feedbackPlugin() {
         <button id="other-button" class="feedback-type-button">Other</button>
       </div>
       <div id="textarea-container" style="display: none; margin-top: 5px;">
-        <p>Please type your feedback.</p>
-        <textarea id="feedback-text" rows="5" placeholder="Type your feedback here..."></textarea>
+      
+        <input id="feedback-title" style="" placeholder="Short title for your post"></input>
+     
+        <textarea id="feedback-text" rows="4" placeholder="Share more details here"></textarea>
       </div>
       <button id="send-feedback" style="margin-top: 10px; display:none;">Send</button>
       <div id="confirmation-div">Your request has been sent!</div>
@@ -112,6 +131,7 @@ function feedbackPlugin() {
   const closeButton = container.querySelector("#close-feedback");
   const textareaContainer = container.querySelector("#textarea-container");
   const feedbackText = container.querySelector("#feedback-text");
+  const feedbackTitle = container.querySelector("#feedback-title");
   const sendButton = container.querySelector("#send-feedback");
   const confirmationDiv = container.querySelector("#confirmation-div");
   const bugButton = container.querySelector("#bug-button");
@@ -130,6 +150,7 @@ function feedbackPlugin() {
       feedbackTypeButton.style.display = "block";
       otherButton.style.display = "block";
       feedbackText.value = "";
+      feedbackTitle.value = "";
       formTitle.textContent = "Feedback Form";
     } else {
       feedbackModal.style.display = "none";
@@ -180,14 +201,15 @@ function feedbackPlugin() {
   // Send feedback handler
   sendButton.addEventListener("click", async () => {
     const feedback = feedbackText.value.trim();
-    if (!feedback) {
+    const title = feedbackTitle.value.trim();
+    if (!feedback || !title) {
       alert("Please enter your feedback before sending.");
       return;
     }
     // Disable send button to prevent multiple clicks
     sendButton.disabled = true;
 
-    const success = await sendFeedback(feedback);
+    const success = await sendFeedback(title, feedback);
     sendButton.disabled = false;
 
     if (success) {
@@ -196,20 +218,24 @@ function feedbackPlugin() {
       textareaContainer.style.display = "none";
       sendButton.style.display = "none";
       feedbackText.value = "";
+      feedbackTitle.value = "";
     } else {
       formTitle.textContent = "Error sending feedback. Please try again.";
     }
   });
 
   // Send feedback function (same as your original)
-  async function sendFeedback(text) {
+  async function sendFeedback(title, text) {
     // const endpoint = "http://localhost:3001/api/feedback";
-    const endpoint = "http://api.feedbackform.rivieraapps.com/api/feedback";
+    const endpoint = "https://api.feedbackform.rivieraapps.com/api/feedback";
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, type: feedbackType }),
+        body: JSON.stringify({
+          title: title, 
+          message: text, 
+          type: feedbackType }),
       });
       if (response.ok) {
         return true;
