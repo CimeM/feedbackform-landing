@@ -204,7 +204,7 @@ function feedbackPlugin() {
   // Send feedback function (same as your original)
   async function sendFeedback(text) {
     // const endpoint = "http://localhost:3001/api/feedback";
-    const endpoint = "http://api.feedbackform.rivieraapps.com/api/feedback";
+    const endpoint = "https://api.feedbackform.rivieraapps.com/api/feedback";
     try {
       const response = await fetch(endpoint, {
         method: "POST",
