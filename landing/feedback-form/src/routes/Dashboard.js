@@ -153,7 +153,7 @@ const Dashboard = () => {
     fetchFeedbacks(apiurl, selectedHostname).then((fbs) => {
       setFeedbacks(fbs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     });
-  }, []);
+  }, [selectedHostname]);
 
   // Filtering logic: by type and search query
   const filteredFeedbacks = feedbacks.filter((fb) => {

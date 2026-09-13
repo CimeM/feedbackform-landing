@@ -21,14 +21,10 @@ jobs:
     defaults:
       run:
         working-directory: landing/feedback-form
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -36,7 +32,7 @@ jobs:
           node-version: "24"
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Inject API Key into plugin.js
         env:
@@ -45,12 +41,14 @@ jobs:
           sed -i "s/__GEMINI_KEY_PLACEHOLDER__/${GEMINI_API_KEY}/g" public/plugin.js
 
       - name: Build project
-        run: pnpm run build
+        env:
+          CI: false
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build 
+          path: landing/feedback-form/build
 
   deploy:
     environment:

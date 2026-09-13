@@ -7,21 +7,15 @@ const BlogPost = () => {
     const { slug } = useParams();
     const post = posts.find(p => p.slug === slug);
     const [content, setContent] = useState("");
-    const [metadata, setMetadata] = useState({});
-
 
     useEffect(() => {
       if (post) {
-        console.log(content)
         fetch(`/posts/${post.file}`)
           .then(res => res.text())
           .then(setContent);
-          
       }
     }, [post]);
 
-
-  
     if (!post) return (
       <div className="max-w-2xl mx-auto py-10 px-4">
         <h1 className="text-3xl font-bold mb-4 text-red-600">Post not found</h1>
@@ -42,6 +36,6 @@ const BlogPost = () => {
         </article>
       </div>
     );
-  };
+};
   
-  export default BlogPost;
+export default BlogPost;
