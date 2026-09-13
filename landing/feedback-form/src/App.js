@@ -16,13 +16,27 @@ import './index.css';
 function App() {
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "/plugin.js"; // replace with your script URL
-    script.async = true;
-    document.body.appendChild(script);
+    // 1. Check if script is already injected
+    let script = document.querySelector('script[src="/plugin.js"]');
+    
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "/plugin.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
 
     return () => {
-      document.body.removeChild(script); // Clean up on unmount
+      // 2. Remove injected DOM container created by the script
+      const container = document.getElementById("riviera-chat-plugin-container");
+      if (container) {
+        container.remove();
+      }
+
+      // 3. Remove script tag if necessary
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
   }, []);
 
