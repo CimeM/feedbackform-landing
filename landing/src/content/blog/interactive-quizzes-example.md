@@ -1,7 +1,7 @@
 ---
 draft: false
 title: "Build a Quiz, Capture Leads: How Interactive Language Tests Beat PDF Exams"
-snippet: "Learn how lang.rivieraapps.com uses interactive quizzes with detailed mind maps to assess language levels and capture leads — and how you can use the same approach for your teaching business."
+snippet: "Learn how lerins.rivieraapps.com uses interactive quizzes with detailed mind maps to assess language levels and capture leads — and how you can use the same approach for your teaching business."
 image:
   src: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?&fit=crop&w=430&h=240"
   alt: "Interactive quiz on a laptop screen"
@@ -18,7 +18,7 @@ For the student, it’s boring, high-friction, and entirely one-size-fits-all.
 For the language business, it’s a tragedy. Static PDFs create zero user engagement, offer no immediate gratification, and worst of all, they result in zero lead capture. Potential students leave your site without giving you a way to follow up. In today's fast-paced digital world, if you aren't capturing attention instantly, you're losing clients.
 
 2. Meet Fluent95: A Smarter Way to Assess
-Enter Fluent95 (lang.rivieraapps.com), a free interactive language level testing platform that is changing the game for French, Italian, Slovene, and more.
+Enter Fluent95 (lerins.rivieraapps.com), a free interactive language level testing platform that is changing the game for French, Italian, Slovene, and more.
 
 Instead of wading through a dry text document, users take a dynamic, fast-paced quiz right in their browser. But the real magic happens at the finish line. Instead of throwing a generic "You are B1" score at them, Fluent95 generates a personalized mind map.
 
