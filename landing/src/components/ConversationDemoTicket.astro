@@ -1,0 +1,92 @@
+<section id="conversation-demo-ticket" class="border-y border-slate-200 bg-white py-16">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(320px,420px)] lg:px-8">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-widest text-blue-600">A conversation that keeps moving</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Let every question find its next step.</h2>
+      
+    </div>
+
+    <div class="mx-auto w-full max-w-[420px]">
+      <div class="aspect-square overflow-hidden rounded-[28px] border border-[#ded5c7] bg-[#f6f1e8] p-3 shadow-[0_18px_45px_rgba(92,75,57,0.14)] sm:p-4">
+        <div class="flex h-full flex-col overflow-hidden rounded-[14px] border border-[#e6ddcf] bg-[#fffaf2]">
+          <div class="flex items-center justify-between border-b border-[#e6ddcf] px-4 py-3 text-xs font-semibold text-[#647b8c]"><span>Lérins AI</span><span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-[#9aad83]"></span>online</span></div>
+          <div id="demo-message-list" class="flex min-h-0 flex-1 flex-col justify-end gap-3 overflow-hidden p-4" aria-live="polite"></div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const demoMessages = [
+      { role: "user", text: "👩‍🦰 My delivery arrived with the wrong flowers. Can you help?" },
+      { role: "ai", text: "🤖 I can open a support ticket for you. What was your order number?" },
+      { role: "user", text: "👩‍🦰 It’s #4821. I ordered blush roses but received lilies." },
+      { role: "ai", text: "🤖 Thanks. I’ve opened ticket #1048 for order #4821 and sent it to our support team. We’ll follow up shortly with a replacement or refund." },
+    ];
+    const demoRoot = document.querySelector("#conversation-demo-ticket");
+    const demoList = demoRoot?.querySelector("#demo-message-list");
+    const addButton = demoRoot?.querySelector("#add-demo-message");
+    const removeButton = demoRoot?.querySelector("#remove-demo-message");
+    const resetButton = demoRoot?.querySelector("#reset-demo-messages");
+    const messageDelayMs = 1500;
+    let visibleMessages = 0;
+    let animationTimer;
+
+    function renderDemoMessages() {
+      if (!demoList) return;
+      demoList.innerHTML = "";
+      demoMessages.slice(0, visibleMessages).forEach((message) => {
+        const bubble = document.createElement("div");
+        bubble.className = `max-w-[88%] rounded-[18px] px-3 py-2 text-xs leading-relaxed shadow-sm ${message.role === "user" ? "self-end rounded-br-md bg-[#647b8c] text-white" : "self-start rounded-bl-md border border-[#e6ddcf] bg-[#fffdf8] text-[#4f4a43]"} demo-bubble-in`;
+        bubble.textContent = message.text;
+        demoList.appendChild(bubble);
+      });
+    }
+
+    function addDemoMessage() {
+      if (visibleMessages >= demoMessages.length) return;
+      visibleMessages += 1;
+      renderDemoMessages();
+    }
+
+    function playNextMessage() {
+      if (visibleMessages >= demoMessages.length) return;
+      addDemoMessage();
+      animationTimer = window.setTimeout(playNextMessage, messageDelayMs);
+    }
+
+    function resetDemoMessages() {
+      window.clearTimeout(animationTimer);
+      visibleMessages = 0;
+      renderDemoMessages();
+      if (demoRoot?.matches(".demo-is-visible")) {
+        animationTimer = window.setTimeout(playNextMessage, messageDelayMs);
+      }
+    }
+
+    addButton?.addEventListener("click", addDemoMessage);
+    removeButton?.addEventListener("click", () => {
+      if (visibleMessages > 0) visibleMessages -= 1;
+      renderDemoMessages();
+    });
+    resetButton?.addEventListener("click", resetDemoMessages);
+
+    const demoObserver = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      demoRoot?.classList.add("demo-is-visible");
+      animationTimer = window.setTimeout(playNextMessage, 700);
+      demoObserver.disconnect();
+    }, { threshold: 0.35 });
+
+    if (demoRoot) demoObserver.observe(demoRoot);
+  </script>
+  <style is:global>
+    @keyframes demoBubbleIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .demo-bubble-in { animation: demoBubbleIn 560ms cubic-bezier(0.22, 1.2, 0.36, 1) both; }
+    @media (prefers-reduced-motion: reduce) { .demo-bubble-in { animation: none; } }
+  </style>
+</section>

@@ -1,0 +1,62 @@
+---
+import { Icon } from "astro-icon/components";
+
+const testimonials = [
+  {
+    name: "Sarah M.",
+    role: "Private tutor",
+    quote:
+      "Really simple CRM to keep track of students. Hi! I'm a teacher doing short tutorials, and on and off I have/had 600 clients. Because I usually don't see them a for a few years in-between classes, it's become hard to track what we've discussed.",
+    rating: 5,
+  },
+  {
+    name: "David L.",
+    role: "Independent teacher",
+    quote:
+      "I'm a 1-person company. And I need little more than an expanded Contacts app-- where I record their name, nickname, email address, some preferences, then I can also note key points of class discussions with dates.",
+    rating: 4,
+  },
+  {
+    name: "Nina R.",
+    role: "Language coach",
+    quote:
+      "There are a lot of Do It Yourself tools online but having purpose-built application si something else.",
+    rating: 5,
+  },
+];
+---
+
+<section class="mt-24">
+  <div class="max-w-2xl">
+    <h2 class="text-4xl lg:text-5xl font-bold tracking-tight">
+      Loved by teachers who want a simpler workflow
+    </h2>
+    <p class="mt-4 text-lg text-slate-600">
+      See how tutors and coaches use the platform to manage students, payments,
+      and follow-ups with less friction.
+    </p>
+  </div>
+
+  <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {
+      testimonials.map((item) => (
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center gap-1 text-amber-500" aria-label={`${item.rating} out of 5 stars`}>
+            {Array.from({ length: item.rating }).map(() => (
+              <Icon name="bx:bxs-star" class="h-5 w-5" />
+            ))}
+          </div>
+
+          <p class="mt-4 text-slate-700 leading-relaxed">
+            “{item.quote}”
+          </p>
+
+          <div class="mt-6">
+            <h3 class="font-semibold text-slate-900">{item.name}</h3>
+            <p class="text-sm text-slate-500">{item.role}</p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

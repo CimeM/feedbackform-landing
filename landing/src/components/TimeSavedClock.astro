@@ -1,0 +1,87 @@
+---
+// TimeSavedClock.astro
+const milestones = [
+  { time: 0, text: "Drafting slides manually late at night...", emoji: "😩" },
+  { time: 5, text: "Grade 3 pop quizzes", emoji: "📝" },
+  { time: 10, text: "Drink a whole cup of coffee while it's hot", emoji: "☕" },
+  { time: 15, text: "Help a student after class", emoji: "💬" },
+  { time: 20, text: "Leave school grounds before sunset!", emoji: "🚪" }
+];
+---
+<div class="max-w-md mx-auto my-10 p-6 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl shadow-xl text-center">
+  <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-500/20">
+    Interactive Time Saver ⏱️
+  </span>
+
+  <h3 class="text-xl font-bold mt-4 text-slate-900 dark:text-white">
+    What will you do with 20 extra minutes?
+  </h3>
+
+  <!-- Digital Clock Display -->
+  <div class="my-6 flex items-center justify-center gap-3">
+    <div class="text-5xl font-black font-mono tracking-tight text-indigo-600 dark:text-indigo-400 bg-slate-50 dark:bg-[#0d1117] px-6 py-3 rounded-2xl border border-slate-200 dark:border-[#30363d] shadow-inner">
+      <span id="timeDisplay">00</span>:00
+      <span class="text-xs font-sans font-semibold text-slate-400 block -mt-1">MINUTES SAVED</span>
+    </div>
+  </div>
+
+  <!-- Interactive Slider -->
+  <div class="px-4 mb-6">
+    <input 
+      type="range" 
+      id="timeSlider" 
+      min="0" 
+      max="20" 
+      value="0" 
+      step="1"
+      class="w-full h-3 bg-slate-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500"
+    />
+    <div class="flex justify-between text-[11px] text-slate-400 font-mono mt-2">
+      <span>0m (Manual)</span>
+      <span>10m</span>
+      <span>20m (With Lérins AI)</span>
+    </div>
+  </div>
+
+  <!-- Dynamic Content Card -->
+  <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-200/80 dark:border-[#30363d]/60 flex items-center gap-3 text-left transition-all">
+    <span id="emojiDisplay" class="text-3xl flex-shrink-0 animate-bounce">😩</span>
+    <p id="textDisplay" class="text-sm font-medium text-slate-700 dark:text-gray-300">
+      Drafting slides manually late at night...
+    </p>
+  </div>
+</div>
+
+<script>
+  function setupClock() {
+    const milestones = [
+      { time: 0, text: "Drafting slides manually late at night...", emoji: "😩" },
+      { time: 5, text: "Grade 3 pop quizzes", emoji: "📝" },
+      { time: 10, text: "Drink a whole cup of coffee while it's still hot", emoji: "☕" },
+      { time: 15, text: "Have a real conversation in the teacher's lounge", emoji: "💬" },
+      { time: 20, text: "Leave school before sunset and enjoy your evening!", emoji: "🚪" }
+    ];
+
+    const slider = document.getElementById('timeSlider') as HTMLInputElement | null;
+    const timeDisplay = document.getElementById('timeDisplay');
+    const textDisplay = document.getElementById('textDisplay');
+    const emojiDisplay = document.getElementById('emojiDisplay');
+
+    if (!slider || !timeDisplay || !textDisplay || !emojiDisplay) return;
+
+    slider.addEventListener('input', (e) => {
+      const val = parseInt((e.target as HTMLInputElement).value, 10);
+      
+      timeDisplay.textContent = val < 10 ? `0${val}` : `${val}`;
+
+      const matched = [...milestones].reverse().find(m => val >= m.time) || milestones[0];
+      
+      textDisplay.textContent = matched.text;
+      emojiDisplay.textContent = matched.emoji;
+    });
+  }
+
+  // Run on initial load and handle Astro view transitions if active
+  setupClock();
+  document.addEventListener('astro:page-load', setupClock);
+</script>

@@ -1,0 +1,74 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import PricingCard from "@/components/pricing.astro";
+
+const pricing = [
+  {
+    name: "Personal",
+    price: "Free",
+    popular: false,
+    features: [
+      "Up to 50 students",
+      "Single teacher account",
+      "Up to 50 parents",
+      "Limited notifications",
+    ],
+    button: {
+      text: "Get Started",
+      link: "mailto:langrivieraapps@gmail.com?subject=Interest%20in%20Lérins AI%20-%20Personal%20Plan&body=Hi%2C%20I%27m%20interested%20in%20the%20Personal%20plan%20for%20Lérins AI.%20Can%20you%20send%20me%20more%20information%3F",
+    },
+  },
+  {
+    name: "Startup",
+    price: {
+      monthly: "$19",
+      annual: "$16",
+      discount: "10%",
+      original: "$24",
+    },
+    popular: true,
+    features: [
+      "Up to 200 students",
+      "Up to 5 teacher accounts",
+      "Unlimited number of parent accounts",
+      "Advanced Integrations",
+      "Online Support",
+    ],
+    button: {
+      text: "Get Started",
+      link: "mailto:langrivieraapps@gmail.com?subject=Interest%20in%20Lérins AI%20-%20Startup%20Plan&body=Hi%2C%20I%27m%20interested%20in%20the%20Startup%20plan%20for%20Lérins AI.%20Can%20you%20send%20me%20more%20information%3F",
+    },
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    popular: false,
+    features: [
+      "Unlimited students",
+      "Online Support",
+    ],
+    button: {
+      text: "Contact us",
+      link: "mailto:langrivieraapps@gmail.com?subject=Interest%20in%20Lérins AI%20-%20Enterprise%20Plan&body=Hi%2C%20I%27m%20interested%20in%20the%20Enterprise%20plan%20for%20Lérins AI.%20Can%20you%20send%20me%20more%20information%3F",
+    },
+  },
+];
+---
+
+<Layout title="Pricing">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Pricing</Fragment>
+      <Fragment slot="desc">
+        Simple & Predictable pricing. No Surprises.
+      </Fragment>
+    </Sectionhead>
+
+    <div
+      class="grid md:grid-cols-3 gap-10 mx-auto max-w-(--breakpoint-lg) mt-12">
+      {pricing.map((item) => <PricingCard plan={item} />)}
+    </div>
+  </Container>
+</Layout>

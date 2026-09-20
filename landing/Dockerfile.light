@@ -1,0 +1,20 @@
+FROM ghcr.io/supportpal/github-gh-cli AS gh-cli
+
+FROM nginx:alpine
+
+COPY --from=gh-cli /usr/bin/gh /usr/bin/gh
+RUN chmod +x /usr/bin/gh
+
+WORKDIR /app
+
+ENV GITHUB_AUTH_TOKEN=tokenhere
+ENV GITHUB_REPO=user/repo-name
+ENV RELEASE_TAG=v0.0.1
+
+COPY entrypoint.sh /entrypoint.sh
+
+EXPOSE 80
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

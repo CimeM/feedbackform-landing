@@ -1,0 +1,70 @@
+---
+// @ts-ignore
+import { Icon } from "astro-icon/components";
+
+const features = [
+  {
+    title: "Less setup. More teaching",
+    description:
+      "Teachers manage their client list while students see their sessions, progress, and schedule in a shared dashboard.",
+    icon: "bx:bxs-briefcase",
+  },
+  {
+    title: "Track Payments & Instalments",
+    description:
+      "Mark each instalment as paid or pending and track payment status for every student in one place.",
+    icon: "bx:bxs-window-alt",
+  },
+  {
+    title: "Automated Reminders",
+    description:
+      "Send email reminders for upcoming sessions, overdue payments, and follow‑ups via email.  ",
+    icon: "bx:bxs-data",
+  },
+  {
+    title: "Online & Offline Sessions",
+    description:
+      "Works for online, in‑person, and hybrid teaching, with clear labels for each type of session.",
+    icon: "bx:bxs-bot",
+  },
+  {
+    title: "Feedback & Progress Notes",
+    description:
+      "Add notes for each session and let students see their progress and feedback directly in their dashboard.",
+    icon: "bx:bxs-file-find",
+  },
+  {
+    title: "Simple, Not Overbuilt",
+    description:
+      "A lightweight CRM focused on teachers’ workflows, not heavy sales pipelines or complex admin panels.",
+    icon: "bx:bxs-user",
+  },
+];
+---
+
+<section class="mt-24">
+<div class="mt-16 md:mt-0">
+  <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight">
+    Everything you need for your teaching practice
+  </h2>
+  <p class="text-lg mt-4 text-slate-600">
+    A complete client dashboard for teachers, with student tracking, payments, reminders, and feedback in one place.
+  </p>
+</div>
+
+<div class="grid sm:grid-cols-2 md:grid-cols-3 mt-16 gap-16">
+  {
+    features.map((item) => (
+      <div class="flex gap-4 items-start">
+        <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0">
+          <Icon class="text-white" name={item.icon} />
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg">{item.title}</h3>{" "}
+          <p class="text-slate-500 mt-2 leading-relaxed">{item.description}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+</section>

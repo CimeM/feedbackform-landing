@@ -1,0 +1,18 @@
+---
+const menuitems = [
+  { title: "Home", path: "/" },
+  { title: "About", path: "/about" },
+  { title: "Blog", path: "/blog" },
+  { title: "Dashboard", path: "/dashboard" },
+];
+---
+
+<header class="border-b border-slate-200 bg-white/95">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <a href="/" class="text-xl font-extrabold tracking-tight text-slate-950"><span class="text-blue-600">Lérins</span> AI</a>
+    <nav aria-label="Main navigation" class="flex items-center gap-4 text-sm font-semibold text-slate-600 sm:gap-7">
+      {menuitems.map((item) => <a href={item.path} class="transition hover:text-blue-600">{item.title}</a>)}
+      <a href="/get-started" class="rounded-lg bg-blue-600 px-3 py-2 text-white transition hover:bg-blue-700">Get started</a>
+    </nav>
+  </div>
+</header>

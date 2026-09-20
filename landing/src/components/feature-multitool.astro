@@ -1,0 +1,47 @@
+---
+// @ts-ignore
+import { Icon } from "astro-icon/components";
+---
+
+<section class="py-20 md:py-28 mt-20 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      
+      <!-- Image side -->
+      <div class="flex-1 relative">
+        <!-- Device frame -->
+        <div class="relative rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200 shadow-xl bg-white">
+          <div class="aspect-[4/3] md:aspect-[16/11] relative bg-gray-50 overflow-hidden">
+            <img
+              src="/feature-multitool.png"
+              alt="Using multiple tools is confusing and takes up time"
+              class="w-full h-full object-cover object-center"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <!-- Subtle decorative glow -->
+        <div class="absolute -bottom-6 -right-6 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl -z-10" />
+        <div class="absolute -top-6 -left-6 w-48 h-48 bg-indigo-400/10 rounded-full blur-3xl -z-10" />
+      </div>
+
+      <!-- Text side -->
+      <div class="flex-1 max-w-lg lg:max-w-md">
+        
+
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mt-6 leading-[1.1]">
+          Less setup. More teaching.
+        </h2>
+
+        <b>No back and forth. Just booked.</b>
+        <p class="text-lg text-gray-500 mt-5 leading-relaxed">
+          Forget the back-and-forth emails, scattered spreadsheets, and payment chasing. Manage your entire teaching practice from one seamless place.
+        </p>
+
+        
+      </div>
+
+    </div>
+  </div>
+</section>

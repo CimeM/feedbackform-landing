@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: landing/feedback-form
+        working-directory: landing
 
     steps:
       - name: Checkout Repository
@@ -34,21 +34,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Inject API Key into plugin.js
+      - name: Inject Gemini API key into plugin.js
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          sed -i "s/__GEMINI_KEY_PLACEHOLDER__/${GEMINI_API_KEY}/g" public/plugin.js
+        run: sed -i "s/__GEMINI_KEY_PLACEHOLDER__/${GEMINI_API_KEY}/g" public/plugin.js
 
       - name: Build project
-        env:
-          CI: false
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: landing/feedback-form/build
+          path: landing/dist
 
   deploy:
     environment:

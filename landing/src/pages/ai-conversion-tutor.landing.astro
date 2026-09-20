@@ -1,0 +1,399 @@
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="LinguaFlow AI — 24/7 AI Placement Concierge for Language Institutes">
+  <div class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
+
+    {/* HERO SECTION */}
+    <section class="max-w-7xl mx-auto px-4 pt-12 pb-16 md:pt-20 md:pb-24 text-center relative">
+      <div class="absolute inset-0 -z-10 flex items-center justify-center">
+        <div class="w-[600px] h-[350px] bg-indigo-600/15 blur-[120px] rounded-full"></div>
+      </div>
+
+      <!-- Hero Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+        <span>Built Exclusively for Language Schools & Tutors</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 max-w-4xl mx-auto">
+        Turn Browsing Visitors into Enrolled Students <br class="hidden sm:inline" />
+        <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">While You Sleep.</span>
+      </h1>
+
+      <p class="max-w-2xl mx-auto text-slate-400 text-base sm:text-lg mb-10 leading-relaxed">
+        Generic contact forms lose up to 70% of potential language students. Our AI Concierge assesses CEFR fluency in 60 seconds, answers tuition queries in 30+ languages, and books trial classes directly into your schedule.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto mb-16">
+        <a href="#demo" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-base shadow-lg shadow-indigo-500/25 transition-all text-center">
+          Test Live Interactive Demo
+        </a>
+        <a href="#calculator" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white font-semibold text-base transition-all text-center">
+          Calculate Converted Revenue
+        </a>
+      </div>
+
+      <!-- DUAL-PANE SIMULATED CONVERSATION DEMO -->
+      <div id="demo" class="max-w-5xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden text-left">
+        <!-- Header bar -->
+        <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+            <span class="ml-2 text-xs font-mono text-slate-400">LinguaFlow Concierge Engine — Live Simulation</span>
+          </div>
+          <span class="text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2.5 py-0.5 rounded-full font-mono">
+            Mode: Interactive Diagnostic
+          </span>
+        </div>
+
+        <div class="grid md:grid-cols-12 min-h-[460px]">
+          <!-- Left: Simulated Student Chat Experience -->
+          <div class="md:col-span-7 p-6 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between bg-slate-900/50">
+            <div>
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-800/60">
+                <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white shadow-md">
+                  AI
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-200 text-sm">Academy Student Concierge</h4>
+                  <p class="text-xs text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active (Responding in <span id="userLangDisplay">English</span>)
+                  </p>
+                </div>
+              </div>
+
+              <!-- Message Stream -->
+              <div class="space-y-4 text-sm" id="simChatStream">
+                <div class="flex gap-3">
+                  <div class="bg-slate-800 text-slate-200 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-700/50">
+                    👋 Welcome to Academia Language Institute! I can help test your language level or answer course questions. What is your primary learning goal today?
+                  </div>
+                </div>
+
+                <div class="flex justify-end hidden" id="simStep1User">
+                  <div class="bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%]" id="simStep1UserText">
+                    I want to improve my Business English for job interviews.
+                  </div>
+                </div>
+
+                <div class="flex gap-3 hidden" id="simStep2Bot">
+                  <div class="bg-slate-800 text-slate-200 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-700/50">
+                    Perfect! Let's do a quick 30-second assessment. Which sentence sounds most natural to you?
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simulated User Choice Options -->
+            <div class="mt-6 pt-4 border-t border-slate-800/80" id="simControlPanel">
+              <p class="text-xs text-slate-400 mb-2 font-mono">Select a sample student response:</p>
+              <div class="grid gap-2">
+                <button id="opt1Btn" class="text-left text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 p-2.5 rounded-lg transition-colors flex items-center justify-between">
+                  <span>A) "I am working here since three years."</span>
+                  <span class="text-indigo-400 text-[10px]">A2 Level</span>
+                </button>
+                <button id="opt2Btn" class="text-left text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 p-2.5 rounded-lg transition-colors flex items-center justify-between">
+                  <span>B) "I've been working here for three years."</span>
+                  <span class="text-emerald-400 text-[10px]">B2 / C1 Level</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Real-time Director Dashboard / Output Payload -->
+          <div class="md:col-span-5 bg-slate-950 p-6 flex flex-col justify-between font-mono text-xs">
+            <div>
+              <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-3 mb-4">
+                <span>CRM & LMS WEBHOOK PAYLOAD</span>
+                <span class="text-emerald-400 text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">STATUS: READY</span>
+              </div>
+
+              <div class="space-y-3">
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg">
+                  <span class="text-slate-500 block">Extracted Goal:</span>
+                  <span id="crmGoal" class="text-slate-200 font-sans font-medium">Business English / Career Advancement</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg">
+                  <span class="text-slate-500 block">Estimated CEFR Score:</span>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span id="crmScoreBadge" class="text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded">
+                      Pending Choice
+                    </span>
+                    <span id="crmScoreDesc" class="text-slate-400 font-sans text-[11px]">Select an option on the left</span>
+                  </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg">
+                  <span class="text-slate-500 block">Recommended Action:</span>
+                  <span id="crmRecAction" class="text-indigo-300 font-sans font-medium">Match with Senior Business English Tutor</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-800">
+              <div class="flex items-center justify-between text-slate-400 text-[11px] mb-2">
+                <span>Automated Slot Reservation:</span>
+                <span class="text-slate-300">Syncing Calendly...</span>
+              </div>
+              <button disabled id="simBookBtn" class="w-full py-2.5 rounded-lg bg-indigo-600/40 text-indigo-300/60 font-sans font-semibold text-xs cursor-not-allowed transition-all">
+                Auto-Book Trial Session
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* VALUE PROPOSITION GRID */}
+    <section class="max-w-6xl mx-auto px-4 py-16 border-t border-slate-800/80">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-extrabold text-white">Engineered for High-Converting Language Schools</h2>
+        <p class="text-slate-400 text-sm mt-2">Replace static contact forms with an intelligent, multi-step intake concierge.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center font-bold text-lg mb-4">
+            🌐
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">30+ Language Detection</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Automatically greets international students in their browser's native language while guiding them toward your target language courses.
+          </p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-lg mb-4">
+            🎓
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">CEFR Diagnostic Engine</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Runs subtle conversational micro-tests to gauge student levels (A1 through C2) before matching them with appropriate group courses or tutors.
+          </p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+          <div class="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center justify-center font-bold text-lg mb-4">
+            📅
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">Zero-Friction Scheduling</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Connects directly to your calendar or LMS to book trial sessions, collect deposits, and send automated WhatsApp/SMS reminders.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* INTERACTIVE ROI CALCULATOR */}
+    <section id="calculator" class="max-w-4xl mx-auto px-4 py-16">
+      <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-8 shadow-xl">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <h2 class="text-2xl font-bold text-white">Calculate Your Monthly Revenue Uplift</h2>
+          <p class="text-slate-400 text-xs mt-1">See how replacing static forms with an AI diagnostic agent affects your bottom line.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <span class="text-slate-300">Monthly Website Visitors</span>
+                <span id="trafficVal" class="text-indigo-400 font-mono">3,000</span>
+              </div>
+              <input type="range" id="trafficInput" min="500" max="20000" step="250" value="3000" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <span class="text-slate-300">Average Student Lifetime Value ($)</span>
+                <span id="ltvVal" class="text-indigo-400 font-mono">$600</span>
+              </div>
+              <input type="range" id="ltvInput" min="100" max="3000" step="50" value="600" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer" />
+            </div>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 text-center">
+            <span class="text-slate-400 text-xs uppercase tracking-wider font-semibold">Estimated Monthly Gain</span>
+            <div id="projectedRevenue" class="text-4xl font-extrabold text-emerald-400 font-mono my-2">+$5,400</div>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Based on a modest <strong class="text-slate-200">+3% increase</strong> in lead-to-trial conversion rates achieved by instant diagnostic engagement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* FLOATING BOT CORNER WIDGET */}
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+      <!-- Chat Container -->
+      <div id="cornerChatBox" class="hidden mb-3 w-[340px] sm:w-[380px] h-[480px] bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
+        <!-- Widget Header -->
+        <div class="bg-slate-950 p-4 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs">
+              AI
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-200 text-xs">Placement Concierge</h4>
+              <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Assistant
+              </p>
+            </div>
+          </div>
+          <button id="closeCornerChat" class="text-slate-400 hover:text-white text-sm px-2 py-1">✕</button>
+        </div>
+
+        <!-- Chat Stream -->
+        <div id="cornerStream" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-slate-900/80">
+          <div class="flex gap-2">
+            <div class="bg-slate-800 text-slate-200 p-3 rounded-xl rounded-tl-none border border-slate-700/40">
+              👋 Hi! Want to test your Spanish, French, or English skills right now?
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Interaction Buttons -->
+        <div id="cornerControls" class="p-3 border-t border-slate-800 bg-slate-950 flex flex-col gap-1.5">
+          <button class="corner-test-btn text-left text-xs bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-slate-800 p-2 rounded-lg transition-colors" data-lang="Spanish">
+            🇪🇸 Take 30-sec Spanish Diagnostic
+          </button>
+          <button class="corner-test-btn text-left text-xs bg-slate-900 hover:bg-slate-800 text-purple-300 border border-slate-800 p-2 rounded-lg transition-colors" data-lang="French">
+            🇫🇷 Take 30-sec French Diagnostic
+          </button>
+        </div>
+      </div>
+
+      <!-- Trigger Bubble Toggle -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex bg-slate-900 border border-slate-800 shadow-lg rounded-xl px-3 py-2 text-xs font-medium text-slate-200 animate-bounce">
+          Test the student widget live! 👋
+        </div>
+        <button id="toggleCornerChat" class="w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-2xl flex items-center justify-center text-xl transition-transform hover:scale-105 active:scale-95">
+          💬
+        </button>
+      </div>
+    </div>
+
+    {/* CLIENT-SIDE SCRIPTS */}
+    <script>
+      // 1. Dual-Pane Simulation Logic
+      const opt1Btn = document.getElementById('opt1Btn');
+      const opt2Btn = document.getElementById('opt2Btn');
+      const simStep1User = document.getElementById('simStep1User');
+      const simStep1UserText = document.getElementById('simStep1UserText');
+      const simStep2Bot = document.getElementById('simStep2Bot');
+      const simControlPanel = document.getElementById('simControlPanel');
+      
+      const crmScoreBadge = document.getElementById('crmScoreBadge');
+      const crmScoreDesc = document.getElementById('crmScoreDesc');
+      const crmRecAction = document.getElementById('crmRecAction');
+      const simBookBtn = document.getElementById('simBookBtn') as HTMLButtonElement | null;
+
+      function handleSimChoice(choice: 'A' | 'B') {
+        if (!simStep1User || !simStep1UserText || !simStep2Bot || !simControlPanel) return;
+
+        simStep1User.classList.remove('hidden');
+        simStep2Bot.classList.remove('hidden');
+        simControlPanel.classList.add('opacity-50', 'pointer-events-none');
+
+        if (choice === 'A') {
+          simStep1UserText.innerText = 'Option A: "I am working here since three years."';
+          if (crmScoreBadge) {
+            crmScoreBadge.innerText = 'A2 (Elementary)';
+            crmScoreBadge.className = 'text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded';
+          }
+          if (crmScoreDesc) crmScoreDesc.innerText = 'Grammar tense gap detected (Present Perfect continuous missing)';
+          if (crmRecAction) crmRecAction.innerText = 'Recommend General Intermediate Track (Group B1)';
+        } else {
+          simStep1UserText.innerText = 'Option B: "I\'ve been working here for three years."';
+          if (crmScoreBadge) {
+            crmScoreBadge.innerText = 'B2 / C1 (Upper-Intermediate)';
+            crmScoreBadge.className = 'text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded';
+          }
+          if (crmScoreDesc) crmScoreDesc.innerText = 'Correct tense & preposition usage verified';
+          if (crmRecAction) crmRecAction.innerText = 'Match with 1-on-1 Executive Business Tutor';
+        }
+
+        if (simBookBtn) {
+          simBookBtn.disabled = false;
+          simBookBtn.className = 'w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-sans font-semibold text-xs transition-all shadow-lg shadow-indigo-600/30 cursor-pointer';
+          simBookBtn.innerText = 'Confirm Trial Booking';
+        }
+      }
+
+      opt1Btn?.addEventListener('click', () => handleSimChoice('A'));
+      opt2Btn?.addEventListener('click', () => handleSimChoice('B'));
+
+      // 2. Interactive ROI Calculator Logic
+      const trafficInput = document.getElementById('trafficInput') as HTMLInputElement | null;
+      const ltvInput = document.getElementById('ltvInput') as HTMLInputElement | null;
+      const trafficVal = document.getElementById('trafficVal');
+      const ltvVal = document.getElementById('ltvVal');
+      const projectedRevenue = document.getElementById('projectedRevenue');
+
+      function calculateROI() {
+        if (!trafficInput || !ltvInput || !trafficVal || !ltvVal || !projectedRevenue) return;
+
+        const traffic = parseInt(trafficInput.value);
+        const ltv = parseInt(ltvInput.value);
+
+        trafficVal.innerText = traffic.toLocaleString();
+        ltvVal.innerText = `$${ltv.toLocaleString()}`;
+
+        // Model: +3% conversion uplift on traffic x LTV
+        const monthlyUplift = Math.round(traffic * 0.03 * ltv);
+        projectedRevenue.innerText = `+$${monthlyUplift.toLocaleString()}`;
+      }
+
+      trafficInput?.addEventListener('input', calculateROI);
+      ltvInput?.addEventListener('input', calculateROI);
+
+      // 3. Floating Corner Widget Toggle
+      const toggleBtn = document.getElementById('toggleCornerChat');
+      const closeBtn = document.getElementById('closeCornerChat');
+      const cornerChatBox = document.getElementById('cornerChatBox');
+      const cornerStream = document.getElementById('cornerStream');
+      const cornerControls = document.getElementById('cornerControls');
+
+      function toggleWidget() {
+        cornerChatBox?.classList.toggle('hidden');
+      }
+
+      toggleBtn?.addEventListener('click', toggleWidget);
+      closeBtn?.addEventListener('click', toggleWidget);
+
+      // Widget interactions
+      const testBtns = document.querySelectorAll('.corner-test-btn');
+      testBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          const lang = target.getAttribute('data-lang');
+
+          if (cornerStream && cornerControls) {
+            cornerStream.innerHTML += `
+              <div class="flex justify-end">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl rounded-tr-none">
+                  Start ${lang} Assessment
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <div class="bg-slate-800 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/40">
+                  ¡Excelente! Let's begin the ${lang} diagnostic. Question 1...
+                </div>
+              </div>
+            `;
+            cornerControls.innerHTML = `<p class="text-[10px] text-slate-500 font-mono text-center py-1">Diagnostic mode running...</p>`;
+            cornerStream.scrollTop = cornerStream.scrollHeight;
+          }
+        });
+      });
+    </script>
+  </div>
+</Layout>
